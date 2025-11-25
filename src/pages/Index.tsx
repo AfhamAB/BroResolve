@@ -1,176 +1,85 @@
-import { useState } from "react";
-import { CommandBar } from "@/components/CommandBar";
-import { TicketCard, TicketStatus, TicketPriority, TicketCategory } from "@/components/TicketCard";
-import { FloatingTerminal } from "@/components/FloatingTerminal";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Search, Filter } from "lucide-react";
-
-interface Ticket {
-  id: string;
-  title: string;
-  category: TicketCategory;
-  priority: TicketPriority;
-  status: TicketStatus;
-  upvotes: number;
-  timestamp: string;
-  mood?: string;
-}
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Terminal, Shield, Zap } from "lucide-react";
 
 const Index = () => {
-  const [commandBarOpen, setCommandBarOpen] = useState(false);
-  const [tickets, setTickets] = useState<Ticket[]>([
-    {
-      id: "BUG-001",
-      title: "Wifi connection dropping in Lab 3",
-      category: "infrastructure",
-      priority: "critical",
-      status: "reviewing",
-      upvotes: 42,
-      timestamp: "2h ago",
-      mood: "frustrated",
-    },
-    {
-      id: "BUG-002",
-      title: "AC not working in Classroom B",
-      category: "infrastructure",
-      priority: "high",
-      status: "patching",
-      upvotes: 28,
-      timestamp: "4h ago",
-      mood: "neutral",
-    },
-    {
-      id: "BUG-003",
-      title: "Missing lecture notes for DSA module",
-      category: "academic",
-      priority: "medium",
-      status: "committed",
-      upvotes: 15,
-      timestamp: "1d ago",
-      mood: "neutral",
-    },
-    {
-      id: "BUG-004",
-      title: "Counseling session request",
-      category: "mental-health",
-      priority: "high",
-      status: "merged",
-      upvotes: 8,
-      timestamp: "2d ago",
-      mood: "panicking",
-    },
-  ]);
-
-  const handleCommandSubmit = (text: string, mood: string) => {
-    // Simple category detection
-    let category: TicketCategory = "other";
-    let priority: TicketPriority = "medium";
-
-    if (text.toLowerCase().includes("wifi") || text.toLowerCase().includes("ac") || text.toLowerCase().includes("lab")) {
-      category = "infrastructure";
-      priority = "high";
-    } else if (text.toLowerCase().includes("notes") || text.toLowerCase().includes("lecture")) {
-      category = "academic";
-    } else if (text.toLowerCase().includes("counseling") || text.toLowerCase().includes("mental")) {
-      category = "mental-health";
-      priority = "high";
-    }
-
-    if (mood === "panicking") {
-      priority = "critical";
-    }
-
-    const newTicket: Ticket = {
-      id: `BUG-${String(tickets.length + 1).padStart(3, "0")}`,
-      title: text,
-      category,
-      priority,
-      status: "committed",
-      upvotes: 1,
-      timestamp: "just now",
-      mood,
-    };
-
-    setTickets([newTicket, ...tickets]);
-  };
-
-  const handleUpvote = (id: string) => {
-    setTickets(tickets.map((t) => (t.id === id ? { ...t, upvotes: t.upvotes + 1 } : t)));
-  };
-
-  const handleTicketClick = (id: string) => {
-    console.log("Open ticket:", id);
-  };
+  const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen p-8">
-      <div className="max-w-7xl mx-auto space-y-8">
-        {/* Header */}
-        <header className="space-y-4 animate-fade-in">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-cyan-300 bg-clip-text text-transparent">
-                Debug Protocol
-              </h1>
-              <p className="text-muted-foreground font-mono">
-                // Campus issues treated as bugs. Don't complain. Debug.
-              </p>
-            </div>
-            <Badge variant="outline" className="font-mono text-primary border-primary/30">
-              {tickets.length} Active Issues
-            </Badge>
+    <div className="min-h-screen flex items-center justify-center p-8">
+      <div className="max-w-4xl mx-auto text-center space-y-12">
+        {/* Hero Section */}
+        <div className="space-y-6 animate-fade-in">
+          <div className="flex items-center justify-center mb-6">
+            <Zap className="w-20 h-20 text-primary glow-primary" />
           </div>
-
-          {/* Search Bar */}
-          <div className="glass-panel p-4 flex items-center gap-3">
-            <Search className="w-5 h-5 text-muted-foreground" />
-            <Input
-              placeholder="Search tickets..."
-              className="flex-1 bg-transparent border-0 focus-visible:ring-0 font-mono"
-            />
-            <button className="glass-panel-hover p-2 border-primary/20">
-              <Filter className="w-5 h-5" />
-            </button>
-          </div>
-        </header>
-
-        {/* Stats */}
-        <div className="grid grid-cols-4 gap-4 animate-fade-in" style={{ animationDelay: "0.1s" }}>
-          {[
-            { label: "Critical", count: tickets.filter((t) => t.priority === "critical").length, color: "text-destructive" },
-            { label: "In Progress", count: tickets.filter((t) => t.status !== "merged").length, color: "text-warning" },
-            { label: "Resolved", count: tickets.filter((t) => t.status === "merged").length, color: "text-success" },
-            { label: "Avg. Resolution", value: "3.2h", color: "text-primary" },
-          ].map((stat, i) => (
-            <div key={i} className="glass-panel p-6 text-center">
-              <div className={`text-3xl font-bold font-mono mb-2 ${stat.color}`}>
-                {stat.count !== undefined ? stat.count : stat.value}
-              </div>
-              <div className="text-sm text-muted-foreground font-mono">{stat.label}</div>
-            </div>
-          ))}
+          <h1 className="text-6xl font-bold bg-gradient-to-r from-primary via-cyan-300 to-primary bg-clip-text text-transparent">
+            Debug Protocol
+          </h1>
+          <p className="text-xl text-muted-foreground font-mono max-w-2xl mx-auto">
+            // Campus issues treated as bugs. Don't complain. Debug.
+            <br />
+            Your campus runs on code. Report bugs. Track fixes. Get results.
+          </p>
         </div>
 
-        {/* Tickets Grid */}
-        <div className="space-y-4">
-          {tickets.map((ticket, i) => (
-            <div
-              key={ticket.id}
-              className="animate-fade-in"
-              style={{ animationDelay: `${0.2 + i * 0.05}s` }}
-            >
-              <TicketCard ticket={ticket} onUpvote={handleUpvote} onClick={handleTicketClick} />
+        {/* Portal Selection */}
+        <div className="grid md:grid-cols-2 gap-8 animate-fade-in" style={{ animationDelay: "0.2s" }}>
+          {/* Student Portal */}
+          <button
+            onClick={() => navigate("/student/auth")}
+            className="glass-panel p-12 hover-lift group cursor-pointer text-left"
+          >
+            <Terminal className="w-16 h-16 mb-6 text-primary glow-primary group-hover:scale-110 transition-transform" />
+            <h2 className="text-3xl font-bold mb-3 group-hover:text-primary transition-colors">
+              Student Terminal
+            </h2>
+            <p className="text-muted-foreground font-mono mb-6">
+              Report issues, track fixes, upvote bugs. Your voice, amplified.
+            </p>
+            <div className="flex items-center gap-2 text-primary font-mono text-sm">
+              <span>Access Terminal</span>
+              <span className="group-hover:translate-x-2 transition-transform">→</span>
             </div>
-          ))}
+          </button>
+
+          {/* Admin Portal */}
+          <button
+            onClick={() => navigate("/admin/auth")}
+            className="glass-panel p-12 hover-lift group cursor-pointer text-left border-destructive/20"
+          >
+            <Shield className="w-16 h-16 mb-6 text-destructive glow-destructive group-hover:scale-110 transition-transform" />
+            <h2 className="text-3xl font-bold mb-3 group-hover:text-destructive transition-colors">
+              Admin Console
+            </h2>
+            <p className="text-muted-foreground font-mono mb-6">
+              Manage all tickets, update status, resolve issues. Elevated access.
+            </p>
+            <div className="flex items-center gap-2 text-destructive font-mono text-sm">
+              <span>Access Console</span>
+              <span className="group-hover:translate-x-2 transition-transform">→</span>
+            </div>
+          </button>
+        </div>
+
+        {/* Stats Preview */}
+        <div className="glass-panel p-8 animate-fade-in" style={{ animationDelay: "0.4s" }}>
+          <div className="grid grid-cols-3 gap-8">
+            <div>
+              <div className="text-4xl font-bold font-mono text-primary mb-2">0</div>
+              <div className="text-sm text-muted-foreground font-mono">Active Issues</div>
+            </div>
+            <div>
+              <div className="text-4xl font-bold font-mono text-success mb-2">0</div>
+              <div className="text-sm text-muted-foreground font-mono">Resolved</div>
+            </div>
+            <div>
+              <div className="text-4xl font-bold font-mono text-primary mb-2">0</div>
+              <div className="text-sm text-muted-foreground font-mono">Students</div>
+            </div>
+          </div>
         </div>
       </div>
-
-      {/* Command Bar */}
-      <CommandBar open={commandBarOpen} onOpenChange={setCommandBarOpen} onSubmit={handleCommandSubmit} />
-
-      {/* Floating Terminal Button */}
-      <FloatingTerminal onClick={() => setCommandBarOpen(true)} />
     </div>
   );
 };
