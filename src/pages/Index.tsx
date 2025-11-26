@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Terminal, Shield, Zap } from "lucide-react";
+import { Terminal, Zap } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -14,49 +14,30 @@ const Index = () => {
             <Zap className="w-20 h-20 text-primary glow-primary" />
           </div>
           <h1 className="text-6xl font-bold bg-gradient-to-r from-primary via-cyan-300 to-primary bg-clip-text text-transparent">
-            Debug Protocol
+            BroResolve
           </h1>
           <p className="text-xl text-muted-foreground font-mono max-w-2xl mx-auto">
-            // Campus issues treated as bugs. Don't complain. Debug.
+            // Your issues, our priority. Let's resolve it together.
             <br />
-            Your campus runs on code. Report bugs. Track fixes. Get results.
+            Track issues. Get updates. Find solutions.
           </p>
         </div>
 
-        {/* Portal Selection */}
-        <div className="grid md:grid-cols-2 gap-8 animate-fade-in" style={{ animationDelay: "0.2s" }}>
-          {/* Student Portal */}
+        {/* Portal Access */}
+        <div className="max-w-md mx-auto animate-fade-in" style={{ animationDelay: "0.2s" }}>
           <button
-            onClick={() => navigate("/student/auth")}
-            className="glass-panel p-12 hover-lift group cursor-pointer text-left"
+            onClick={() => navigate("/auth")}
+            className="glass-panel p-12 hover-lift group cursor-pointer text-center w-full"
           >
-            <Terminal className="w-16 h-16 mb-6 text-primary glow-primary group-hover:scale-110 transition-transform" />
+            <Terminal className="w-16 h-16 mb-6 text-primary glow-primary group-hover:scale-110 transition-transform mx-auto" />
             <h2 className="text-3xl font-bold mb-3 group-hover:text-primary transition-colors">
-              Student Terminal
+              Access Portal
             </h2>
             <p className="text-muted-foreground font-mono mb-6">
-              Report issues, track fixes, upvote bugs. Your voice, amplified.
+              Login to submit issues, track resolutions, and manage tickets.
             </p>
-            <div className="flex items-center gap-2 text-primary font-mono text-sm">
-              <span>Access Terminal</span>
-              <span className="group-hover:translate-x-2 transition-transform">→</span>
-            </div>
-          </button>
-
-          {/* Admin Portal */}
-          <button
-            onClick={() => navigate("/admin/auth")}
-            className="glass-panel p-12 hover-lift group cursor-pointer text-left border-destructive/20"
-          >
-            <Shield className="w-16 h-16 mb-6 text-destructive glow-destructive group-hover:scale-110 transition-transform" />
-            <h2 className="text-3xl font-bold mb-3 group-hover:text-destructive transition-colors">
-              Admin Console
-            </h2>
-            <p className="text-muted-foreground font-mono mb-6">
-              Manage all tickets, update status, resolve issues. Elevated access.
-            </p>
-            <div className="flex items-center gap-2 text-destructive font-mono text-sm">
-              <span>Access Console</span>
+            <div className="flex items-center justify-center gap-2 text-primary font-mono text-sm">
+              <span>Get Started</span>
               <span className="group-hover:translate-x-2 transition-transform">→</span>
             </div>
           </button>

@@ -15,11 +15,10 @@ const loginSchema = z.object({
 });
 
 const signupSchema = loginSchema.extend({
-  fullName: z.string().min(2, "Name must be at least 2 characters").max(100).optional(),
+  fullName: z.string().min(2, "Name must be at least 2 characters").max(100),
 });
 
-export default function StudentAuth() {
-  const [isLogin, setIsLogin] = useState(true);
+export default function Auth() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
@@ -28,48 +27,70 @@ export default function StudentAuth() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user && role === "student") {
-      navigate("/student/dashboard");
+    if (user && role) {
+      // Redirect based on role
+      if (role === "admin") {
+        navigate("/admin/dashboard");
+      } else if (role === "student") {
+        navigate("/student/dashboard");
+      }
     }
   }, [user, role, navigate]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      if (isLogin) {
-        const result = loginSchema.safeParse({ email, password });
-        if (!result.success) {
-          toast.error(result.error.errors[0].message);
-          setLoading(false);
-          return;
-        }
-
-        const { error } = await signIn(email, password);
-        if (error) {
-          toast.error(error.message || "Login failed");
-        } else {
-          toast.success("Logged in successfully");
-        }
-      } else {
-        const result = signupSchema.safeParse({ email, password, fullName });
-        if (!result.success) {
-          toast.error(result.error.errors[0].message);
-          setLoading(false);
-          return;
-        }
-
-        const { error } = await signUp(email, password, fullName);
-        if (error) {
-          toast.error(error.message || "Signup failed");
-        } else {
-          toast.success("Account created successfully");
-        }
+      const result = loginSchema.safeParse({ email, password });
+      if (!result.success) {
+        toast.error(result.error.errors[0].message);
+        setLoading(false);
+        return;
       }
+
+      const { error } = await signIn(email, password);
+      if (error) {
+        toast.error(error.message || "Login failed");
+        setLoading(false);
+        return;
+      }
+
+      // Wait a moment for role to be fetched
+      setTimeout(() => {
+        setLoading(false);
+      }, 500);
     } catch (error) {
       toast.error("An unexpected error occurred");
-    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const result = signupSchema.safeParse({ email, password, fullName });
+      if (!result.success) {
+        toast.error(result.error.errors[0].message);
+        setLoading(false);
+        return;
+      }
+
+      const { error } = await signUp(email, password, fullName);
+      if (error) {
+        toast.error(error.message || "Sign up failed");
+        setLoading(false);
+        return;
+      }
+
+      toast.success("Account created successfully!");
+      setTimeout(() => {
+        setLoading(false);
+      }, 500);
+    } catch (error) {
+      toast.error("An unexpected error occurred");
       setLoading(false);
     }
   };
@@ -79,28 +100,28 @@ export default function StudentAuth() {
       <div className="w-full max-w-md space-y-6">
         <div className="text-center space-y-2 animate-fade-in">
           <Terminal className="w-16 h-16 mx-auto text-primary glow-primary" />
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-cyan-300 bg-clip-text text-transparent">
-            Student Terminal
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-cyan-300 bg-clip-text text-transparent">
+            BroResolve
           </h1>
           <p className="text-muted-foreground font-mono text-sm">
-            // Report bugs. Track fixes. Debug campus.
+            // Your issues, our priority. Let's resolve it together.
           </p>
         </div>
 
-        <Tabs value={isLogin ? "login" : "signup"} onValueChange={(v) => setIsLogin(v === "login")} className="glass-panel p-6 animate-fade-in" style={{ animationDelay: "0.1s" }}>
-          <TabsList className="grid w-full grid-cols-2 mb-6">
-            <TabsTrigger value="login" className="font-mono">Login</TabsTrigger>
-            <TabsTrigger value="signup" className="font-mono">Sign Up</TabsTrigger>
+        <Tabs defaultValue="login" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="login">Login</TabsTrigger>
+            <TabsTrigger value="signup">Sign Up</TabsTrigger>
           </TabsList>
 
           <TabsContent value="login">
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleLogin} className="glass-panel p-6 space-y-4 animate-fade-in">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="login-email">Email</Label>
                 <Input
-                  id="email"
+                  id="login-email"
                   type="email"
-                  placeholder="student@example.com"
+                  placeholder="your.email@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -108,9 +129,9 @@ export default function StudentAuth() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="login-password">Password</Label>
                 <Input
-                  id="password"
+                  id="login-password"
                   type="password"
                   placeholder="••••••••"
                   value={password}
@@ -126,15 +147,16 @@ export default function StudentAuth() {
           </TabsContent>
 
           <TabsContent value="signup">
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSignup} className="glass-panel p-6 space-y-4 animate-fade-in">
               <div className="space-y-2">
-                <Label htmlFor="fullName">Full Name (Optional)</Label>
+                <Label htmlFor="signup-name">Full Name</Label>
                 <Input
-                  id="fullName"
+                  id="signup-name"
                   type="text"
-                  placeholder="John Doe"
+                  placeholder="Your Name"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
+                  required
                   className="font-mono"
                 />
               </div>
@@ -143,7 +165,7 @@ export default function StudentAuth() {
                 <Input
                   id="signup-email"
                   type="email"
-                  placeholder="student@example.com"
+                  placeholder="your.email@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
