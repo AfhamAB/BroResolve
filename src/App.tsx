@@ -6,8 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
-import StudentAuth from "./pages/student/Auth";
-import AdminAuth from "./pages/admin/Auth";
+import Auth from "./pages/Auth";
 import StudentDashboard from "./pages/student/Dashboard";
 import AdminDashboard from "./pages/admin/Dashboard";
 import NotFound from "./pages/NotFound";
@@ -23,8 +22,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/student/auth" element={<StudentAuth />} />
-            <Route path="/admin/auth" element={<AdminAuth />} />
+            <Route path="/auth" element={<Auth />} />
             <Route
               path="/student/dashboard"
               element={

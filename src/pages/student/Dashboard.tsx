@@ -163,10 +163,10 @@ export default function StudentDashboard() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-cyan-300 bg-clip-text text-transparent">
-                Debug Protocol
+                BroResolve
               </h1>
               <p className="text-muted-foreground font-mono">
-                // Campus issues treated as bugs. Don't complain. Debug.
+                // Your issues, our priority. Let's resolve it together.
               </p>
             </div>
             <div className="flex items-center gap-4">
