@@ -6,7 +6,9 @@ import { TicketStatus, TicketPriority, TicketCategory } from "@/components/Ticke
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Search, Filter, LogOut, Shield } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Search, Filter, LogOut, Shield, UserPlus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -26,6 +28,9 @@ interface AdminTicket {
 export default function AdminDashboard() {
   const [tickets, setTickets] = useState<AdminTicket[]>([]);
   const [loading, setLoading] = useState(true);
+  const [addAdminEmail, setAddAdminEmail] = useState("");
+  const [addingAdmin, setAddingAdmin] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const { signOut } = useAuth();
   const navigate = useNavigate();
 
@@ -94,6 +99,43 @@ export default function AdminDashboard() {
     console.log("Open ticket details:", id);
   };
 
+  const handleAddAdmin = async () => {
+    if (!addAdminEmail.trim()) {
+      toast.error("Please enter an email address");
+      return;
+    }
+
+    setAddingAdmin(true);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('add-admin', {
+        body: { email: addAdminEmail.trim() }
+      });
+
+      if (error) {
+        console.error("Error adding admin:", error);
+        toast.error(error.message || "Failed to add admin");
+        setAddingAdmin(false);
+        return;
+      }
+
+      if (data?.error) {
+        toast.error(data.error);
+        setAddingAdmin(false);
+        return;
+      }
+
+      toast.success(data.message || "Admin added successfully");
+      setAddAdminEmail("");
+      setDialogOpen(false);
+    } catch (error) {
+      console.error("Error adding admin:", error);
+      toast.error("Failed to add admin");
+    } finally {
+      setAddingAdmin(false);
+    }
+  };
+
   const handleLogout = async () => {
     await signOut();
     navigate("/");
@@ -120,6 +162,53 @@ export default function AdminDashboard() {
               <Badge variant="outline" className="font-mono text-destructive border-destructive/30">
                 {tickets.length} Total Issues
               </Badge>
+              
+              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="outline" size="icon" className="border-primary/30">
+                    <UserPlus className="w-5 h-5" />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="glass-panel border-primary/20">
+                  <DialogHeader>
+                    <DialogTitle className="text-2xl font-bold">Add New Admin</DialogTitle>
+                    <DialogDescription className="font-mono text-muted-foreground">
+                      Enter the email address of the user you want to promote to admin.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4 py-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="admin-email">Email Address</Label>
+                      <Input
+                        id="admin-email"
+                        type="email"
+                        placeholder="user@example.com"
+                        value={addAdminEmail}
+                        onChange={(e) => setAddAdminEmail(e.target.value)}
+                        className="font-mono"
+                        disabled={addingAdmin}
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button
+                      variant="outline"
+                      onClick={() => setDialogOpen(false)}
+                      disabled={addingAdmin}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={handleAddAdmin}
+                      disabled={addingAdmin}
+                      className="bg-destructive hover:bg-destructive/90"
+                    >
+                      {addingAdmin ? "Adding..." : "Add Admin"}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+
               <Button variant="ghost" size="icon" onClick={handleLogout}>
                 <LogOut className="w-5 h-5" />
               </Button>
