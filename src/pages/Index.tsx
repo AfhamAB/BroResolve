@@ -34,7 +34,7 @@ const Index = () => {
             BroResolve
           </h1>
           <p className="text-xl text-muted-foreground font-mono max-w-2xl mx-auto">
-            // Your issues, our priority. Let's resolve it together.
+            Your issues, our priority. Let&apos;s resolve it together.
             <br />
             Track issues. Get updates. Find solutions.
           </p>
@@ -48,7 +48,7 @@ const Index = () => {
           >
             <Terminal className="w-16 h-16 mb-6 text-primary glow-primary group-hover:scale-110 transition-transform mx-auto" />
             <h2 className="text-3xl font-bold mb-3 group-hover:text-primary transition-colors">
-              Access Portal
+              Login Page
             </h2>
             <p className="text-muted-foreground font-mono mb-6">
               Login to submit issues, track resolutions, and manage tickets.
