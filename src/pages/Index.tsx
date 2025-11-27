@@ -1,9 +1,26 @@
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Terminal, Zap } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
   const navigate = useNavigate();
+  const [stats, setStats] = useState({
+    active_issues: 0,
+    resolved_issues: 0,
+    students: 0,
+  });
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      const { data, error } = await supabase.rpc("get_public_stats");
+      if (data && !error) {
+        setStats(data as { active_issues: number; resolved_issues: number; students: number });
+      }
+    };
+    fetchStats();
+  }, []);
 
   return (
     <div className="min-h-screen flex items-center justify-center p-8">
@@ -47,15 +64,21 @@ const Index = () => {
         <div className="glass-panel p-8 animate-fade-in" style={{ animationDelay: "0.4s" }}>
           <div className="grid grid-cols-3 gap-8">
             <div>
-              <div className="text-4xl font-bold font-mono text-primary mb-2">0</div>
+              <div className="text-4xl font-bold font-mono text-primary mb-2">
+                {stats.active_issues}
+              </div>
               <div className="text-sm text-muted-foreground font-mono">Active Issues</div>
             </div>
             <div>
-              <div className="text-4xl font-bold font-mono text-success mb-2">0</div>
+              <div className="text-4xl font-bold font-mono text-success mb-2">
+                {stats.resolved_issues}
+              </div>
               <div className="text-sm text-muted-foreground font-mono">Resolved</div>
             </div>
             <div>
-              <div className="text-4xl font-bold font-mono text-primary mb-2">0</div>
+              <div className="text-4xl font-bold font-mono text-primary mb-2">
+                {stats.students}
+              </div>
               <div className="text-sm text-muted-foreground font-mono">Students</div>
             </div>
           </div>
