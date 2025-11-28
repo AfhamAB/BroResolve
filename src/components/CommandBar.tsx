@@ -54,7 +54,7 @@ export const CommandBar = ({ open, onOpenChange, onSubmit }: CommandBarProps) =>
         <div className="p-6 border-b border-primary/20">
           <div className="flex items-center gap-3 mb-4">
             <Terminal className="w-5 h-5 text-primary" />
-            <h2 className="text-xl font-bold font-mono">Debug Protocol</h2>
+            <h2 className="text-xl font-bold font-mono">BroResolve</h2>
           </div>
           
           <form onSubmit={handleSubmit}>
