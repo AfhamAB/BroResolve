@@ -3,12 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { AdminTicketCard } from "@/components/AdminTicketCard";
 import { TicketStatus, TicketPriority, TicketCategory } from "@/components/TicketCard";
+import { EditProfileDialog } from "@/components/EditProfileDialog";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Search, Filter, LogOut, Shield, UserPlus } from "lucide-react";
+import { Search, Filter, LogOut, Shield, UserPlus, Users, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -31,7 +32,8 @@ export default function AdminDashboard() {
   const [addAdminEmail, setAddAdminEmail] = useState("");
   const [addingAdmin, setAddingAdmin] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const { signOut } = useAuth();
+  const [profileDialogOpen, setProfileDialogOpen] = useState(false);
+  const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -163,6 +165,15 @@ export default function AdminDashboard() {
                 {tickets.length} Total Issues
               </Badge>
               
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => navigate("/admin/users")}
+                className="border-primary/30"
+              >
+                <Users className="w-5 h-5" />
+              </Button>
+
               <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <DialogTrigger asChild>
                   <Button variant="outline" size="icon" className="border-primary/30">
@@ -208,6 +219,10 @@ export default function AdminDashboard() {
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
+
+              <Button variant="ghost" size="icon" onClick={() => setProfileDialogOpen(true)}>
+                <User className="w-5 h-5" />
+              </Button>
 
               <Button variant="ghost" size="icon" onClick={handleLogout}>
                 <LogOut className="w-5 h-5" />
@@ -270,6 +285,15 @@ export default function AdminDashboard() {
           )}
         </div>
       </div>
+
+      {/* Profile Edit Dialog */}
+      {user && (
+        <EditProfileDialog
+          open={profileDialogOpen}
+          onOpenChange={setProfileDialogOpen}
+          userId={user.id}
+        />
+      )}
     </div>
   );
 }
