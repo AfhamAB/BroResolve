@@ -4,10 +4,11 @@ import { useAuth } from "@/contexts/AuthContext";
 import { CommandBar } from "@/components/CommandBar";
 import { TicketCard, TicketStatus, TicketPriority, TicketCategory } from "@/components/TicketCard";
 import { FloatingTerminal } from "@/components/FloatingTerminal";
+import { EditProfileDialog } from "@/components/EditProfileDialog";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Search, Filter, LogOut } from "lucide-react";
+import { Search, Filter, LogOut, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -25,6 +26,7 @@ interface Ticket {
 
 export default function StudentDashboard() {
   const [commandBarOpen, setCommandBarOpen] = useState(false);
+  const [profileDialogOpen, setProfileDialogOpen] = useState(false);
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(true);
   const { user, signOut } = useAuth();
@@ -173,6 +175,9 @@ export default function StudentDashboard() {
               <Badge variant="outline" className="font-mono text-primary border-primary/30">
                 {tickets.length} My Issues
               </Badge>
+              <Button variant="ghost" size="icon" onClick={() => setProfileDialogOpen(true)}>
+                <User className="w-5 h-5" />
+              </Button>
               <Button variant="ghost" size="icon" onClick={handleLogout}>
                 <LogOut className="w-5 h-5" />
               </Button>
@@ -246,6 +251,15 @@ export default function StudentDashboard() {
 
       {/* Command Bar */}
       <CommandBar open={commandBarOpen} onOpenChange={setCommandBarOpen} onSubmit={handleCommandSubmit} />
+
+      {/* Profile Edit Dialog */}
+      {user && (
+        <EditProfileDialog
+          open={profileDialogOpen}
+          onOpenChange={setProfileDialogOpen}
+          userId={user.id}
+        />
+      )}
 
       {/* Floating Terminal Button */}
       <FloatingTerminal onClick={() => setCommandBarOpen(true)} />
