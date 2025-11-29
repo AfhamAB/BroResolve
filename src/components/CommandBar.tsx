@@ -104,7 +104,7 @@ export const CommandBar = ({ open, onOpenChange, onSubmit }: CommandBarProps) =>
               </>
             ) : (
               <>
-                <Terminal className="w-4 h-4 mr-2 group-hover:rotate-12 transition-transform" />
+                <Terminal className="w-4 h-4 mr-2" />
                 Commit Issue
               </>
             )}
