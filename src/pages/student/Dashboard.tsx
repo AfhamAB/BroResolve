@@ -22,6 +22,7 @@ interface Ticket {
   upvotes: number;
   created_at: string;
   mood?: string;
+  image_url?: string;
 }
 
 export default function StudentDashboard() {
@@ -64,7 +65,7 @@ export default function StudentDashboard() {
     }
   };
 
-  const handleCommandSubmit = async (text: string, mood: string) => {
+  const handleCommandSubmit = async (text: string, mood: string, image?: File) => {
     if (!user) return;
 
     // Simple category detection
@@ -89,6 +90,30 @@ export default function StudentDashboard() {
     const ticketId = `BUG-${String(ticketCount).padStart(3, "0")}`;
 
     try {
+      let imageUrl: string | undefined;
+
+      // Upload image if provided
+      if (image) {
+        const fileExt = image.name.split(".").pop();
+        const fileName = `${user.id}/${ticketId}-${Date.now()}.${fileExt}`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from("ticket-attachments")
+          .upload(fileName, image);
+
+        if (uploadError) {
+          console.error("Error uploading image:", uploadError);
+          toast.error("Failed to upload image");
+          return;
+        }
+
+        const { data: { publicUrl } } = supabase.storage
+          .from("ticket-attachments")
+          .getPublicUrl(fileName);
+
+        imageUrl = publicUrl;
+      }
+
       const { data, error } = await supabase
         .from("tickets")
         .insert({
@@ -100,6 +125,7 @@ export default function StudentDashboard() {
           mood,
           upvotes: 1,
           created_by: user.id,
+          image_url: imageUrl,
         })
         .select()
         .single();
@@ -239,6 +265,7 @@ export default function StudentDashboard() {
                     upvotes: ticket.upvotes,
                     timestamp: getTimeAgo(ticket.created_at),
                     mood: ticket.mood,
+                    image_url: ticket.image_url,
                   }}
                   onUpvote={() => handleUpvote(ticket.id)}
                   onClick={handleTicketClick}
