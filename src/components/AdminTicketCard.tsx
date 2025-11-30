@@ -16,6 +16,7 @@ interface AdminTicket {
   created_at: string;
   mood?: string;
   student_name?: string;
+  image_url?: string;
 }
 
 interface AdminTicketCardProps {
@@ -75,6 +76,17 @@ export const AdminTicketCard = ({ ticket, onStatusChange, onClick }: AdminTicket
                 Reported by: {ticket.student_name}
               </p>
             )}
+
+            {ticket.image_url && (
+              <div className="relative overflow-hidden rounded-lg border border-primary/20 mb-3">
+                <img
+                  src={ticket.image_url}
+                  alt="Ticket attachment"
+                  className="w-full h-48 object-cover"
+                />
+              </div>
+            )}
+
             <PipelineTracker status={ticket.status} />
           </div>
         </div>
@@ -114,7 +126,7 @@ export const AdminTicketCard = ({ ticket, onStatusChange, onClick }: AdminTicket
               <SelectItem value="committed">Committed</SelectItem>
               <SelectItem value="reviewing">Reviewing</SelectItem>
               <SelectItem value="patching">Patching</SelectItem>
-              <SelectItem value="merged">Merged</SelectItem>
+              <SelectItem value="resolved">Resolved</SelectItem>
             </SelectContent>
           </Select>
         </div>

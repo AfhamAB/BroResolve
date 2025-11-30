@@ -16,6 +16,7 @@ interface Ticket {
   upvotes: number;
   timestamp: string;
   mood?: string;
+  image_url?: string;
 }
 
 interface TicketCardProps {
@@ -56,6 +57,16 @@ export const TicketCard = ({ ticket, onUpvote, onClick }: TicketCardProps) => {
             <span className="font-mono">{ticket.timestamp}</span>
           </div>
         </div>
+
+        {ticket.image_url && (
+          <div className="relative overflow-hidden rounded-lg border border-primary/20">
+            <img
+              src={ticket.image_url}
+              alt="Ticket attachment"
+              className="w-full h-48 object-cover"
+            />
+          </div>
+        )}
 
         <PipelineTracker status={ticket.status} />
       </div>

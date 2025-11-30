@@ -54,6 +54,7 @@ export type Database = {
           created_by: string | null
           description: string | null
           id: string
+          image_url: string | null
           mood: string | null
           priority: string
           resolution_notes: string | null
@@ -71,6 +72,7 @@ export type Database = {
           created_by?: string | null
           description?: string | null
           id?: string
+          image_url?: string | null
           mood?: string | null
           priority: string
           resolution_notes?: string | null
@@ -88,6 +90,7 @@ export type Database = {
           created_by?: string | null
           description?: string | null
           id?: string
+          image_url?: string | null
           mood?: string | null
           priority?: string
           resolution_notes?: string | null

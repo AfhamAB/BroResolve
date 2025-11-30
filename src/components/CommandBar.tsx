@@ -1,13 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Terminal, Zap } from "lucide-react";
+import { Terminal, Zap, Image, X } from "lucide-react";
 
 interface CommandBarProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (text: string, mood: string) => void;
+  onSubmit: (text: string, mood: string, image?: File) => void;
 }
 
 const moods = [
@@ -21,6 +21,9 @@ export const CommandBar = ({ open, onOpenChange, onSubmit }: CommandBarProps) =>
   const [input, setInput] = useState("");
   const [selectedMood, setSelectedMood] = useState("neutral");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -34,15 +37,37 @@ export const CommandBar = ({ open, onOpenChange, onSubmit }: CommandBarProps) =>
     return () => document.removeEventListener("keydown", down);
   }, [open, onOpenChange]);
 
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && file.type.startsWith("image/")) {
+      setSelectedImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setSelectedImage(null);
+    setImagePreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
 
     setIsAnalyzing(true);
     setTimeout(() => {
-      onSubmit(input, selectedMood);
+      onSubmit(input, selectedMood, selectedImage || undefined);
       setInput("");
       setSelectedMood("neutral");
+      setSelectedImage(null);
+      setImagePreview(null);
       setIsAnalyzing(false);
       onOpenChange(false);
     }, 1000);
@@ -71,7 +96,7 @@ export const CommandBar = ({ open, onOpenChange, onSubmit }: CommandBarProps) =>
         <div className="p-6 space-y-4">
           <div>
             <label className="text-sm text-muted-foreground mb-3 block font-mono">
-              // Select your current state
+              Select your current state
             </label>
             <div className="grid grid-cols-4 gap-3">
               {moods.map((mood) => (
@@ -90,6 +115,48 @@ export const CommandBar = ({ open, onOpenChange, onSubmit }: CommandBarProps) =>
                 </button>
               ))}
             </div>
+          </div>
+
+          <div>
+            <label className="text-sm text-muted-foreground mb-3 block font-mono">
+              Attach image (optional)
+            </label>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleImageSelect}
+              className="hidden"
+              id="image-upload"
+            />
+            {imagePreview ? (
+              <div className="relative glass-panel p-2">
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  className="w-full h-32 object-cover rounded"
+                />
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="icon"
+                  className="absolute top-4 right-4"
+                  onClick={handleRemoveImage}
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+            ) : (
+              <label
+                htmlFor="image-upload"
+                className="glass-panel-hover p-4 flex items-center justify-center gap-2 cursor-pointer border-primary/10"
+              >
+                <Image className="w-5 h-5 text-muted-foreground" />
+                <span className="text-sm font-mono text-muted-foreground">
+                  Click to attach image
+                </span>
+              </label>
+            )}
           </div>
 
           <Button

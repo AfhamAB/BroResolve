@@ -24,6 +24,7 @@ interface AdminTicket {
   created_at: string;
   mood?: string;
   student_name?: string;
+  image_url?: string;
 }
 
 export default function AdminDashboard() {
@@ -69,6 +70,7 @@ export default function AdminDashboard() {
         created_at: ticket.created_at,
         mood: ticket.mood || undefined,
         student_name: profilesMap.get(ticket.created_by) || "Unknown Student",
+        image_url: ticket.image_url || undefined,
       }));
 
       setTickets(ticketsWithNames);
