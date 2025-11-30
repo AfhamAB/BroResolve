@@ -9,7 +9,7 @@ const stages = [
   { key: "committed", label: "Committed", icon: Check },
   { key: "reviewing", label: "Reviewing", icon: Eye },
   { key: "patching", label: "Patching", icon: Wrench },
-  { key: "merged", label: "Merged", icon: GitMerge },
+  { key: "resolved", label: "Resolved", icon: GitMerge },
 ] as const;
 
 export const PipelineTracker = ({ status }: PipelineTrackerProps) => {
@@ -39,7 +39,7 @@ export const PipelineTracker = ({ status }: PipelineTrackerProps) => {
                   isActive
                     ? isCurrent
                       ? "bg-primary text-primary-foreground shadow-[0_0_20px_hsl(var(--primary)/0.6)]"
-                      : status === "merged"
+                      : status === "resolved"
                       ? "bg-success text-success-foreground aurora-resolved"
                       : "bg-primary/80 text-primary-foreground"
                     : "bg-muted/30 text-muted-foreground"

@@ -201,8 +201,8 @@ export default function StudentDashboard() {
         <div className="grid grid-cols-4 gap-4 animate-fade-in" style={{ animationDelay: "0.1s" }}>
           {[
             { label: "Critical", count: tickets.filter((t) => t.priority === "critical").length, color: "text-destructive" },
-            { label: "In Progress", count: tickets.filter((t) => t.status !== "merged").length, color: "text-warning" },
-            { label: "Resolved", count: tickets.filter((t) => t.status === "merged").length, color: "text-success" },
+            { label: "In Progress", count: tickets.filter((t) => t.status !== "resolved").length, color: "text-warning" },
+            { label: "Resolved", count: tickets.filter((t) => t.status === "resolved").length, color: "text-success" },
             { label: "Total", count: tickets.length, color: "text-primary" },
           ].map((stat, i) => (
             <div key={i} className="glass-panel p-6 text-center">
