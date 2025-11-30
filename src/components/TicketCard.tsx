@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowUp, Clock } from "lucide-react";
 import { PipelineTracker } from "./PipelineTracker";
 
-export type TicketStatus = "committed" | "reviewing" | "patching" | "merged";
+export type TicketStatus = "committed" | "reviewing" | "patching" | "resolved";
 export type TicketPriority = "low" | "medium" | "high" | "critical";
 export type TicketCategory = "infrastructure" | "academic" | "mental-health" | "hostel" | "other";
 
