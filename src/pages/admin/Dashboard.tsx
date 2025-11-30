@@ -157,7 +157,7 @@ export default function AdminDashboard() {
                 </h1>
               </div>
               <p className="text-muted-foreground font-mono">
-                // Elevated access. All tickets. Handle with care.
+                Elevated access. All tickets. Handle with care.
               </p>
             </div>
             <div className="flex items-center gap-4">

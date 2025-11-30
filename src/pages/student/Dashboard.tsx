@@ -168,7 +168,7 @@ export default function StudentDashboard() {
                 BroResolve
               </h1>
               <p className="text-muted-foreground font-mono">
-                // Your issues, our priority. Let's resolve it together.
+                Your issues, our priority. Let's resolve it together.
               </p>
             </div>
             <div className="flex items-center gap-4">
